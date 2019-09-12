@@ -14,6 +14,6 @@
             Resized="OpenGLControl_Resized"
 			MouseMove="OnMouseMove"
             RenderContextType="FBO" 
-            DrawFPS="True" />
+            DrawFPS="False" />
     </Grid>
 </Window>

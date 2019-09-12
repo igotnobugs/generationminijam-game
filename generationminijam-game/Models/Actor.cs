@@ -35,7 +35,7 @@ namespace generationminijam_game.Models {
             frictionCoefficient = 0.5f;
             paddleAcceleration = new Vector3(0, 0, 1);
             paddleAcceleration2 = new Vector3(1, 0, 0);
-            jumpForce = new Vector3(0, 2, 0);
+            jumpForce = new Vector3(0, 1.5f, 0);
 
             canMoveUp = false;
             canMoveDown = false;
