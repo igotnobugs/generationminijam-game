@@ -27,3 +27,6 @@ C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminija
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\bin\Debug\NAudio.dll
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\bin\Debug\NAudio.xml
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game_Content.g.cs
+C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\obj\Debug\App.g.cs
+C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game_Content.g.cs
+C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game_MarkupCompile.cache
