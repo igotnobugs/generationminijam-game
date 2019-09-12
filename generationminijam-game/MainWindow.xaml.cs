@@ -87,6 +87,12 @@ namespace generationminijam_game {
             Scale = new Vector3(10, 10, 10),
             Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f)
         };
+        private Actor Enemy = new Actor() {
+            isEnemy = true,
+            Position = new Vector3(200, 10, -70),
+            Scale = new Vector3(10, 10, 10),
+            Color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f)
+        };
         private Mesh SpinningMesh = new Mesh() {
             Position = new Vector3(0, 10, -6),
             Scale = new Vector3(10, 10, 10),
@@ -192,6 +198,10 @@ namespace generationminijam_game {
                 }
         
                 Player.DrawCube(gl);
+                if (level == 1) {
+                    Enemy.DrawCube(gl);
+                    Enemy.ChasePlayer(Player, true);
+                }
                 ActorInPlatform = false;
 
                 if (Player.Position.y > Player.Scale.y) {

@@ -28,6 +28,7 @@ namespace generationminijam_game.Models {
         public bool canSprint;
         public bool canJump;
         public bool isJumping;
+        public bool isEnemy;
 
         public Actor() {
             Mass = 1.0f;
@@ -36,6 +37,7 @@ namespace generationminijam_game.Models {
             paddleAcceleration = new Vector3(0, 0, 1);
             paddleAcceleration2 = new Vector3(1, 0, 0);
             jumpForce = new Vector3(0, 2, 0);
+            isEnemy = false;
 
             canMoveUp = false;
             canMoveDown = false;
@@ -101,9 +103,19 @@ namespace generationminijam_game.Models {
             else {
                 ApplyFriction(frictionCoefficient, 1 ,"x");
             }
+        }
 
+        public void ChasePlayer(Actor player, bool enable) {
+            if (!enable) {
+                return;
+            }
 
+            Vector3 PlayerPosition = player.Position;
+            Vector3 direction = PlayerPosition - Position;
 
+            ApplyForce(direction.Normalized());
+
+            ApplyFriction(frictionCoefficient, 1);
         }
     }
 }
