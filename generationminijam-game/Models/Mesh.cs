@@ -17,27 +17,27 @@ namespace generationminijam_game.Models {
         //public bool EnabledUpdate { get; set; }
 
         public Mesh() {
-            this.Position = new Vector3();
-            this.Velocity = new Vector3();
-            this.Acceleration = new Vector3();
-            this.Rotation = 0;
+            Position = new Vector3();
+            Velocity = new Vector3();
+            Acceleration = new Vector3();
+            Rotation = 0;
         }
 
         public Mesh(Vector3 initPos) {
-            this.Position = initPos;
-            this.Velocity = new Vector3();
-            this.Acceleration = new Vector3();
-            this.Rotation = 0;
+            Position = initPos;
+            Velocity = new Vector3();
+            Acceleration = new Vector3();
+            Rotation = 0;
         }
 
         public Mesh(float x, float y, float z, int r) {
-            this.Position = new Vector3();
-            this.Velocity = new Vector3();
-            this.Acceleration = new Vector3();
-            this.Position.x = x;
-            this.Position.y = y;
-            this.Position.z = z;
-            this.Rotation = r;
+            Position = new Vector3();
+            Velocity = new Vector3();
+            Acceleration = new Vector3();
+            Position.x = x;
+            Position.y = y;
+            Position.z = z;
+            Rotation = r;
         }
 
         public void DrawSquare(OpenGL gl, float lineWidth = 1.0f) {
@@ -45,12 +45,12 @@ namespace generationminijam_game.Models {
             gl.LineWidth(lineWidth);
             gl.Color(Color.r, Color.g, Color.b, Color.a);
             gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z);
             gl.End();
 
             if (enabledUpdate) {
@@ -63,10 +63,10 @@ namespace generationminijam_game.Models {
             gl.Color(Color.r, Color.g, Color.b, Color.a);
 
             gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
-            gl.Vertex(this.Position.x , this.Position.y, this.Position.z);
-            gl.Vertex(this.Position.x, this.Position.y + Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x + Scale.x, this.Position.y, this.Position.z);
-            gl.Vertex(this.Position.x + Scale.x, this.Position.y + Scale.y, this.Position.z);
+            gl.Vertex(Position.x, Position.y, Position.z);
+            gl.Vertex(Position.x, Position.y + Scale.y, Position.z);
+            gl.Vertex(Position.x + Scale.x, Position.y, Position.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z);
             gl.End();
 
         }
@@ -75,9 +75,9 @@ namespace generationminijam_game.Models {
             gl.LineWidth(lineWidth);
             gl.Color(Color.r, Color.g, Color.b, Color.a);
             gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z);
-            gl.Vertex(this.Position.x, this.Position.y + this.Scale.y, this.Position.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z);
+            gl.Vertex(Position.x, Position.y + Scale.y, Position.z);
             gl.End();
         }
 
@@ -85,65 +85,62 @@ namespace generationminijam_game.Models {
             gl.LineWidth(1);
             gl.Color(0, 0, 0, Color.a);
             gl.Begin(OpenGL.GL_LINE_LOOP);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z + Scale.z);
             gl.End();
 
             gl.Begin(OpenGL.GL_LINE_LOOP);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z + Scale.z);
             gl.End();
 
             gl.Begin(OpenGL.GL_LINE_LOOP);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z - Scale.z);
             gl.End();
 
             //POLYGON
             gl.Color(Color.r, Color.g, Color.b, Color.a);
             gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
             //Front face
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z + Scale.z);
             //Right face
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
-
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z - Scale.z);
             //Back face
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z - Scale.z);
             //Left face
-
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z + Scale.z);
             gl.End();
 
             gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
             //Top face      
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z + this.Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z + Scale.z);
             //gl.Color(0, 0, 0);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y + this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y + this.Scale.y, this.Position.z - this.Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y + Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y + Scale.y, Position.z - Scale.z);
             gl.End();
 
             gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
             //Bottom face
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z + this.Scale.z);
-            gl.Vertex(this.Position.x - this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
-            gl.Vertex(this.Position.x + this.Scale.x, this.Position.y - this.Scale.y, this.Position.z - this.Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y - Scale.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y - Scale.y, Position.z - Scale.z);
             gl.End();
             if (enabledUpdate) {
                 UpdateMotion();
@@ -155,13 +152,12 @@ namespace generationminijam_game.Models {
             gl.LineWidth(lineWidth);
             gl.Color(Color.r, Color.g, Color.b, Color.a);
             Resolution = (int)GameUtils.Constrain(Resolution, 10, 100);
-
             gl.Begin(OpenGL.GL_LINE_LOOP);
             for (int ii = 0; ii < Resolution; ii++) {
                 double angle = 2.0f * Math.PI * ii / Resolution;
                 double x = Radius * Math.Cos(angle);
                 double y = Radius * Math.Sin(angle);
-                gl.Vertex(x + this.Position.x, y + this.Position.y, this.Position.z);
+                gl.Vertex(x + Position.x, y + Position.y, Position.z);
             }
             gl.End();
             if (enabledUpdate) {
@@ -198,16 +194,16 @@ namespace generationminijam_game.Models {
 
         public bool HasCollidedWith(Mesh target) {
             bool xHasNotCollided =
-                this.Position.x - this.Scale.x - (this.Velocity.x / 2) > target.Position.x + target.Scale.x ||
-                this.Position.x + this.Scale.x + (this.Velocity.x / 2) < target.Position.x - target.Scale.x;
+                Position.x - Scale.x - (Velocity.x / 2) > target.Position.x + target.Scale.x ||
+                Position.x + Scale.x + (Velocity.x / 2) < target.Position.x - target.Scale.x;
 
             bool yHasNotCollided =
-                this.Position.y - this.Scale.y + (this.Velocity.y / 2) > target.Position.y + target.Scale.y ||
-                this.Position.y + this.Scale.y - (this.Velocity.y / 2) < target.Position.y - target.Scale.y;
+                Position.y - Scale.y + (Velocity.y / 2) > target.Position.y + target.Scale.y ||
+                Position.y + Scale.y - (Velocity.y / 2) < target.Position.y - target.Scale.y;
 
             bool zHasNotCollided =
-                this.Position.z - this.Scale.z > target.Position.z + target.Scale.z ||
-                this.Position.z + this.Scale.z < target.Position.z - target.Scale.z;
+                Position.z - Scale.z > target.Position.z + target.Scale.z ||
+                Position.z + Scale.z < target.Position.z - target.Scale.z;
 
             return !(xHasNotCollided || yHasNotCollided || zHasNotCollided);
             

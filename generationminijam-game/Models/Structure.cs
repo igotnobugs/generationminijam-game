@@ -11,8 +11,10 @@ namespace generationminijam_game.Models {
         public bool Grid;
         public int GridSize;
         public bool Goal;
+        public int ID;
 
         public Structure() {
+            ID = 0;
             Grid = true;
             GridSize = 20;
             Goal = false;
@@ -22,25 +24,39 @@ namespace generationminijam_game.Models {
             Mesh Line = new Mesh {
                 Color = new Vector4(Color.r, Color.g, Color.b, Color.a)
             };
+            if (Goal) {
+                Color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+            }
             Line.DrawLine(gl, new Vector3(Position.x - Scale.x, Position.y, Position.z - Scale.z), new Vector3(Position.x - Scale.x, Position.y, Position.z + Scale.z), 2);
             Line.DrawLine(gl, new Vector3(Position.x - Scale.x, Position.y, Position.z + Scale.z), new Vector3(Position.x + Scale.x, Position.y, Position.z + Scale.z), 2);
             Line.DrawLine(gl, new Vector3(Position.x + Scale.x, Position.y, Position.z + Scale.z), new Vector3(Position.x + Scale.x, Position.y, Position.z - Scale.z), 2);
             Line.DrawLine(gl, new Vector3(Position.x + Scale.x, Position.y, Position.z - Scale.z), new Vector3(Position.x - Scale.x, Position.y, Position.z - Scale.z), 2);
+
             if (Grid) {
                 int xLinesToDraw = (int)(Scale.x * 2) / GridSize;
                 int zLinesToDraw = (int)(Scale.z * 2) / GridSize;
                 //Lines Left To Right
                 for (int i = 0; i < xLinesToDraw; i++) {
-                    Line.DrawLine(gl, new Vector3((Position.x - Scale.x) + (GridSize * i) , Position.y, Position.z + Scale.z), new Vector3((Position.x - Scale.x) + (GridSize * i), Position.y, Position.z - Scale.z));
+                    Line.DrawLine(gl, new Vector3((Position.x - Scale.x) + (GridSize * i) , Position.y , Position.z + Scale.z), new Vector3((Position.x - Scale.x) + (GridSize * i), Position.y, Position.z - Scale.z));
                 }
                 //Lines Top to Bottom
                 for (int i = 0; i < zLinesToDraw; i++) {
                     Line.DrawLine(gl, new Vector3(Position.x - Scale.x, Position.y, (GridSize * i) + (Position.z - Scale.z)), new Vector3(Position.x + Scale.x, Position.y, (GridSize * i) + (Position.z - Scale.z)));
                 }
             }
+
+            gl.Color(Color.r - 0.10f, Color.g - 0.10f, Color.b - 0.10f, Color.a - 0.90f);
+
+            gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
+            gl.Vertex(Position.x - Scale.x, Position.y, Position.z - Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y, Position.z + Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y, Position.z + Scale.z);
+            gl.Vertex(Position.x - Scale.x, Position.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y, Position.z - Scale.z);
+            gl.Vertex(Position.x + Scale.x, Position.y, Position.z + Scale.z);
+            gl.End();
+
         }
-
-
 
         public void DrawMovingGridLines(OpenGL gl) {
             Mesh Line = new Mesh {

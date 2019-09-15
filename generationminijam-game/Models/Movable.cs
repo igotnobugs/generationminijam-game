@@ -32,12 +32,13 @@ namespace generationminijam_game.Models {
             Friction *= frictionMagnitude;
             if (axis == "x") {
                 Friction.z *= 0;
+                Friction.y *= 0;
             }
             if (axis == "z") {
                 Friction.x *= 0;
+                Friction.y *= 0;
             }
             this.ApplyForce(Friction);
-
         }
 
         public void ChangeAngle(float angle) {

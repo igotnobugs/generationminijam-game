@@ -80,15 +80,15 @@ namespace generationminijam_game.Models {
         }
 
         public void Clamp(Vector3 limit) {
-            if (this.x >= limit.x) this.x = limit.x;
-            if (this.y >= limit.y) this.y = limit.y;
-            if (this.z >= limit.z) this.z = limit.z;
+            if (x >= limit.x) x = limit.x;
+            if (y >= limit.y) y = limit.y;
+            if (z >= limit.z) z = limit.z;
         }
 
         public void ClampMin(Vector3 limit) {
-            if (this.x <= limit.x) this.x = limit.x;
-            if (this.y <= limit.y) this.y = limit.y;
-            if (this.z <= limit.z) this.z = limit.z;
+            if (x <= limit.x) x = limit.x;
+            if (y <= limit.y) y = limit.y;
+            if (z <= limit.z) z = limit.z;
         }
 
         public void ClampMin(float x, float y, float z) {

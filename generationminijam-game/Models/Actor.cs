@@ -10,9 +10,9 @@ namespace generationminijam_game.Models {
 
         public float maxSpeed;
         public float frictionCoefficient;
-        public Vector3 paddleAcceleration;
-        public Vector3 paddleAcceleration2;
+        public float Speed;
         public Vector3 jumpForce;
+        public Vector3 startingPosition;
 
         public Key KeyUp = Key.W;
         public Key KeyDown = Key.S;
@@ -33,12 +33,10 @@ namespace generationminijam_game.Models {
         public Actor() {
             Mass = 1.0f;
             maxSpeed = 3.0f;
-            frictionCoefficient = 0.5f;
-            paddleAcceleration = new Vector3(0, 0, 1);
-            paddleAcceleration2 = new Vector3(1, 0, 0);
-            jumpForce = new Vector3(0, 1.5f, 0);
+            Speed = 1;
+            jumpForce = new Vector3(0, 5.5f, 0);
             isEnemy = false;
-
+            frictionCoefficient = 0.5f;
 
             canMoveUp = false;
             canMoveDown = false;
@@ -49,34 +47,61 @@ namespace generationminijam_game.Models {
             isJumping = false;
         }
 
+        public void EnableAll() {
+            EnableControl(true);
+            canMoveUp = true;
+            canMoveDown = true;
+            canMoveLeft = true;
+            canMoveRight = true;
+            canSprint = true;
+            canJump = true;
+        }
+
+        public void ResetToPosition() {
+            Position = startingPosition;
+        }
+
+        public void AllowGravity(List<Structure> floors) {
+            //floors = floors.FindAll(x => x.Position.y <= Position.y);
+            foreach (var floor in floors) {              
+                if (!HasCollidedWith(floor)) {
+                    ApplyGravity();
+                }  else {
+                    Velocity.y *= 0;
+                    Position.y = floor.Position.y + Scale.y;
+                    isJumping = false;                 
+                }
+            }        
+        }
+
         public void EnableControl(bool enable = false) {
 
             if (!enable) {
                 return;
             }
 
-            if ((Keyboard.IsKeyDown(KeySprint)) && (canSprint)) {
+            if (Keyboard.IsKeyDown(KeySprint) && canSprint) {
                 maxSpeed = 6.0f;
             } else {
                 maxSpeed = 3.0f;
             }
 
-            if ((Keyboard.IsKeyDown(KeyJump)) && (canJump) && !(isJumping)) {
+            if (Keyboard.IsKeyDown(KeyJump) && canJump && !isJumping) {
                 ApplyForce(jumpForce);
                 isJumping = true;
             }
-
-            if ((Keyboard.IsKeyDown(KeyUp)) && (canMoveUp))  {
+            
+            if (Keyboard.IsKeyDown(KeyUp) && canMoveUp)  {
                 if (Velocity.z < -maxSpeed) {
-                    ApplyForce(paddleAcceleration * -1);
+                    ApplyForce(new Vector3( 0, 0, Speed) * -1);
                 }
                 else {
                     Velocity.z = -maxSpeed;
                 }
             }
-            else if ((Keyboard.IsKeyDown(KeyDown)) && (canMoveDown)) {
+            else if (Keyboard.IsKeyDown(KeyDown) && canMoveDown) {
                 if (Velocity.z > maxSpeed) {
-                    ApplyForce(paddleAcceleration);
+                    ApplyForce(new Vector3(0, 0, Speed));
                 }
                 else {
                     Velocity.z = maxSpeed;
@@ -85,17 +110,17 @@ namespace generationminijam_game.Models {
                 ApplyFriction(frictionCoefficient, 1, "z");
             }
 
-            if ((Keyboard.IsKeyDown(KeyLeft)) && (canMoveLeft)) {
+            if (Keyboard.IsKeyDown(KeyLeft) && canMoveLeft) {
                 if (Velocity.x > -maxSpeed) {
-                    ApplyForce(paddleAcceleration2 * -1);
+                    ApplyForce(new Vector3(Speed, 0, 0) * -1);
                 }
                 else {
                     Velocity.x = -maxSpeed;
                 }
             }
-            else if ((Keyboard.IsKeyDown(KeyRight)) && (canMoveRight)) {
+            else if (Keyboard.IsKeyDown(KeyRight) && canMoveRight) {
                 if (Velocity.x < maxSpeed) {
-                    ApplyForce(paddleAcceleration2);
+                    ApplyForce(new Vector3(Speed, 0, 0));
                 }
                 else {
                     Velocity.x = maxSpeed;
@@ -110,12 +135,10 @@ namespace generationminijam_game.Models {
             if (!enable) {
                 return;
             }
-
             Vector3 PlayerPosition = player.Position;
             Vector3 direction = PlayerPosition - Position;
 
             ApplyForce(direction.Normalized());
-
             ApplyFriction(frictionCoefficient, 1);
         }
     }

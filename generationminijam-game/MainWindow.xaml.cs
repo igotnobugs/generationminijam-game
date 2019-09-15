@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SharpGL;
 using generationminijam_game.Models;
-using NAudio.Wave;
+using SFML.Audio;
 
 //For MiniGameJam 12Sept19 by Tabalong
 
@@ -23,6 +23,7 @@ namespace generationminijam_game {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+
         public MainWindow() {
             InitializeComponent();
             Loaded += new RoutedEventHandler(delegate (object sender, RoutedEventArgs args) {
@@ -80,8 +81,7 @@ namespace generationminijam_game {
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
         }
 
-        //Meshes
-        private List<Structure> Platforms = new List<Structure>();
+        //Meshes      
         private Actor Player = new Actor() {
             Position = new Vector3(0, 10, -50),
             Scale = new Vector3(10, 10, 10),
@@ -97,8 +97,9 @@ namespace generationminijam_game {
             Position = new Vector3(0, 10, -6),
             Scale = new Vector3(10, 10, 10),
             Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f)
-            
+
         };
+        private List<Structure> Platforms = new List<Structure>();
         private Structure Platform = new Structure() {
             Position = new Vector3(0, 0, -50),
             Scale = new Vector3(100, 0, 100),
@@ -109,15 +110,16 @@ namespace generationminijam_game {
         //System Related
         private Vector3 mouseVector = new Vector3();
         private Vector3 mousePos = new Vector3();
-        public IWavePlayer waveOutDevice = new WaveOut();
-        public Mp3FileReader hypnothisMus = new Mp3FileReader("Resources/hypnothis-by-kevin-macleod.mp3");
+        //public IWavePlayer waveOutDevice = new WaveOut();
+        //public Mp3FileReader hypnothisMus = new Mp3FileReader("Resources/hypnothis-by-kevin-macleod.mp3");
+        //public Mp3FileReader werqMus = new Mp3FileReader("Resources/werq-by-kevin-macleod.mp3");
 
         Vector3 standardPosition = new Vector3(100, 300, 0);
         Vector4 blueColor = new Vector4(0.4f, 0.4f, 0.9f, 1.0f);
         Vector4 greenColor = new Vector4(0.1f, 0.7f, 0.1f, 1.0f);
         Vector4 yellowColor = new Vector4(0.7f, 0.7f, 0.1f, 1.0f);
         Vector4 whiteTransparentColor = new Vector4(0.1f, 0.1f, 0.1f, 0.8f);
-    
+
         public bool levelLoaded = false;
         public bool goalLoaded = false;
         private bool dialogueEnabled = false;
@@ -125,28 +127,31 @@ namespace generationminijam_game {
         private float dialogueNextDuration;
         private int dialogueIndex = 0;
         private int level = 0;
-        private bool ActorInPlatform = true;
+        //private bool ActorInPlatform = true;
         private bool dying = false;
-        private int startTime = 20;
+        //private int startTime = 20;
         private int resetCountdown = 30;
         private bool win = false;
         private int SpinningMeshRotate;
 
-        //x,y = center, x -> Left/Right, y -> Up/Down
-        private int[,] level1Map = { { 0, 0 }, { 1, 0 }, { 2, 0 } };
-        private int[,] level1Goal = { { 3, 0 } };
-        private int[,] level2Map = { { 0, 0 }, { 1, 0 }, { 1, -1} };
-        private int[,] level2Goal = { { 2, -1 } };
-        private int[,] level3Map = { { 0, 0 }, { 1, 0 }, { 1, 1 } , { 2, 1 } , { 4, 1 }};
-        private int[,] level3Goal = { { 5, 1 } };
-        private int[,] level4Map = { { 0, 0 }, { 0, -1 }, { 0, -2 }, { 0, -3 }, { -1, -3 }, { 1, -3 }, { -2, -3 }, { 2, -3 }, { -2, -2 }, { 2, -2 }, { -2, -1 }, { 2, -1 }, { -2, 0 }, { 2, 0 } };
-        private int[,] level4Goal = { { -2, 1 } };
+        private float deathHeight = -50.0f;
+
+        //1st level Array - Position (left/right,up/down,depth). 2nd (n/a, n/a, goal)
+        private int[,,] testmap = { { { 0, 0, 0 }, { 1, 0, 10 }, { 2, 0, 0 }, { 0, 1, 10 }, { 0, -1, -20 }, { -1, 0, -10 }, {3, 0, 0 } },
+                                    { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, {0, 0, 1 } } };
+        private int[,,] level1Map = { { { 0, 0, 0 }, { 1, 0, 0}, { 2, 0, 0}, { 3, 0, 0 } },
+                                      { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 1 } } };
+        private int[,,] level2Map = { { { 0, 0, 0 }, { 1, 0, 0 }, { 1, -1, 0}, { 2, -1, 0 } },
+                                      { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 1 } } };
+        private int[,,] level3Map = { { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 2, 1, 0 }, { 4, 1, 0 }, { 5, 1, 0} },
+                                      { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 1} } };
+        private int[,,] level4Map = { { { 0, 0, 0 }, { 0, -1, 0 }, { 0, -2, 0 }, { 0, -3, 0 }, { -1, -3, 0 }, { 1, -3, 0 }, { -2, -3, 0 }, { 2, -3, 0 }, { -2, -2, 0 }, { 2, -2, 0 }, { -2, -1, 0 }, { 2, -1, 0 }, { -2, 0, 0 }, { 2, 0, 0 }, { -2, 1, 0 } },
+                                      { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 1} } };
 
         public bool isStartMusPlayed = false;
-
+        public Music test = new Music("Resources/hypnothis-by-kevin-macleod.mp3");
 
         public void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args) {
-
             OpenGL gl = args.OpenGL;
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
@@ -155,7 +160,12 @@ namespace generationminijam_game {
 
             #region DrawLevel
             switch (level) {
-                case 0:
+                case -1: //TEST LEVEL
+                    Player.EnableAll();
+                    Player.startingPosition = new Vector3(0, 10, -50);
+                    LoadLevel(gl, testmap);                   
+                    break;
+                case 0: //MAIN MENU
                     gl.Rotate(20, 24 + SpinningMeshRotate, 20);
                     SpinningMesh.DrawCube(gl);
                     SpinningMeshRotate++;
@@ -165,78 +175,50 @@ namespace generationminijam_game {
                     }
                     break;
                 case 1:
-                    LoadLevel(level1Map);
-                    LoadGoal(level1Goal);
+                    Player.startingPosition = new Vector3(0, 10, -50);
+                    LoadLevel(gl, level1Map);
                     break;
                 case 2:
-                    LoadLevel(level2Map);
-                    LoadGoal(level2Goal);
+                    Player.startingPosition = new Vector3(0, 10, -50);
+                    LoadLevel(gl, level2Map);
                     break;
                 case 3:
-                    LoadLevel(level3Map);
-                    LoadGoal(level3Goal);
+                    Player.startingPosition = new Vector3(0, 10, -50);
+                    LoadLevel(gl, level3Map);
                     break;
                 case 4:
-                    LoadLevel(level4Map);
-                    LoadGoal(level4Goal);
+                    Player.startingPosition = new Vector3(0, 10, -50);
+                    LoadLevel(gl, level4Map);
                     break;
             }
             #endregion
 
-            if (Keyboard.IsKeyDown(Key.Escape)) {
-                Environment.Exit(0);
-            }
-
+            #region Game Loop
             if (level != 0) {
                 gl.LookAt(Player.Position.x + mousePos.x / 12, GameUtils.Constrain(100.0f + Player.Position.z, 50, 400), GameUtils.Constrain(-10.0f + Player.Position.z, -200, 200), Player.Position.x + mousePos.x / 12, -90.0f, GameUtils.Constrain(-250.0f + Player.Position.z, -300.0f, -250.0f), 0, 1, 0);
                 gl.Translate(0, 0, -50.0f);
 
-                if (!isStartMusPlayed) {
-                    waveOutDevice.Init(hypnothisMus);
-                    waveOutDevice.Play();
-                    isStartMusPlayed = true;
-                }
-        
-                Player.DrawCube(gl);
-                if (level == 1) {
-                    Enemy.DrawCube(gl);
-                    Enemy.ChasePlayer(Player, true);
-                }
-                ActorInPlatform = false;
+                test.Play();
 
-                if (Player.Position.y > Player.Scale.y) {
-                    Player.isJumping = true;
-                    Player.ApplyGravity();
-                }
-                else {
-                    Player.Velocity.y = 0;
-                    Player.isJumping = false;
-                    Player.Position.y = Player.Scale.y;
-                }
-
+                Player.DrawCube(gl);              
                 foreach (var platform in Platforms) {
                     platform.Draw(gl);
-                    if ((Player.HasCollidedWith(platform)) && (!ActorInPlatform)) {
-                        Player.EnableControl(true);
-                        ActorInPlatform = true;
-                        if ((platform.Goal == true) && (!dying)) {
-                            win = true;
+                    if (Player.HasCollidedWith(platform)) {
+                        if (platform.Goal) {
                             dying = true;
+                            win = true;
                         }
                     }
                 }
+                Player.AllowGravity(Platforms);
 
-                if (startTime > 0) {
-                    startTime--;
-                } else {
-                    if ((!ActorInPlatform) && (level > 0) && (!Player.isJumping)) {
-                        dying = true;
-                        Player.EnableControl(false);
-                    }
-                }
+                //if (level == 1) {
+                //    Enemy.DrawCube(gl);
+                //    Enemy.ChasePlayer(Player, true);
+                //}
 
                 if (dying) {
-                    waveOutDevice.Volume = 0.5f;
+                    //waveOutDevice.Volume = 0.5f;
                     resetCountdown--;
                     Player.Color.a -= 0.05f;
                     if (Player.Scale.x > 0) {
@@ -245,18 +227,26 @@ namespace generationminijam_game {
                 }
 
                 if ((resetCountdown < 0)  && (!win)) {
+                    Player.Velocity *= 0;
                     dying = false;
                     resetCountdown = 60;
+                    Player.EnableControl(true);
                     Player.Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
-                    Player.Position = new Vector3(0, 10, -50);
+                    Player.ResetToPosition();
                     Player.Scale = new Vector3(10, 10, 10);
-                    waveOutDevice.Volume = 1.0f;
+                    //waveOutDevice.Volume = 1.0f;
                 }
 
-                gl.LoadIdentity();
-
+                if ((resetCountdown < 0) && (win)) {
+                    Player.Velocity *= 0;
+                    dying = false;
+                    resetCountdown = 60;
+                    //waveOutDevice.Volume = 1.0f;
+                }
             }
-            Render2D(gl); //UI
+            #endregion
+
+            Render2D(gl); 
 
             #region Dialogue
             switch (level) {
@@ -288,6 +278,7 @@ namespace generationminijam_game {
                             dialogueNextDuration = 80;
                             break;
                         case 5:
+                            Player.EnableControl(true);
                             dialogueEnabled = false;
                             if (win) {
                                 dialogueIndex = 6;
@@ -308,13 +299,14 @@ namespace generationminijam_game {
                             dialogueNextDuration = 80;
                             break;
                         case 9:
-                            startTime = 10;
                             win = false;
                             dialogueEnabled = false;
-                            level++;
                             levelLoaded = false;
                             goalLoaded = false;
-                            Platforms = new List<Structure>();
+                            Player.Scale = new Vector3(10, 10, 10);
+                            Player.Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
+                            Player.EnableControl(true);
+                            level++;
                             break;
                     }
                     break;
@@ -369,12 +361,10 @@ namespace generationminijam_game {
                             break;
                         case 9:
                             win = false;
-                            startTime = 10;
                             dialogueEnabled = false;
-                            level++;
                             levelLoaded = false;
                             goalLoaded = false;
-                            Platforms = new List<Structure>();
+                            level++;
                             break;
                     }
                     break;
@@ -439,12 +429,10 @@ namespace generationminijam_game {
                             break;
                         case 11:
                             win = false;
-                            startTime = 10;
                             dialogueEnabled = false;
-                            level++;
                             levelLoaded = false;
                             goalLoaded = false;
-                            Platforms = new List<Structure>();
+                            level++;
                             break;
                     }
                     break;
@@ -507,12 +495,11 @@ namespace generationminijam_game {
                             break;
                         case 11:
                             win = false;
-                            startTime = 10;
                             dialogueEnabled = false;
-                            level++;
                             levelLoaded = false;
                             goalLoaded = false;
-                            Platforms = new List<Structure>();
+                            //Platforms = new List<Structure>();
+                            level++;
                             break;
                     }
                     break;
@@ -531,7 +518,7 @@ namespace generationminijam_game {
             #endregion
 
             #region UI
-            if (level == 0) {
+            if (level == 0) { //MAIN MENU
                 DialogBox(gl, "Blunondrum", blueColor, new Vector4(0,0,0,0), new Vector3((float)Width / 4, 50, 0), 280, 60, 50);
                 DialogBox(gl, "Press Enter to Start", greenColor, whiteTransparentColor, new Vector3((float)Width/3, 300, 0), 280, 60, 25);
             }
@@ -540,6 +527,10 @@ namespace generationminijam_game {
                 DialogBox(gl, level.ToString(), greenColor, new Vector4(0, 0, 0, 0), new Vector3(20, 20, 0), 100, 20, 20, 55, 45);
             }
             #endregion
+
+            if (Keyboard.IsKeyDown(Key.Escape)) {
+                Environment.Exit(0);
+            }
         }
 
         private void RenderColor(OpenGL gl) {
@@ -589,6 +580,7 @@ namespace generationminijam_game {
         }
 
         public void Render2D(OpenGL gl) {
+            gl.LoadIdentity();
             //  Set the projection matrix.
             gl.MatrixMode(OpenGL.GL_PROJECTION);
             //  Load the identity.
@@ -612,58 +604,38 @@ namespace generationminijam_game {
             gl.DrawText((int)Position.x + correctionx, (int)Height - (int)Position.y - correctiony, TextColor.r, TextColor.g, TextColor.b, "Calibri", textSize, Text);
         }
 
-        public void LoadLevel(int[,] level) {
+        public void LoadLevel(OpenGL gl, int[,,] level) {        
             while (!levelLoaded) {
-                for (int i = 0; i < level.Length / 2; i++) {
-                    int x = level[i, 0];
-                    int z = level[i, 1];
-                    Platforms.Add(new Structure() {
-                        Position = new Vector3(x * 100, 0, -50 + (z * 100)),
-                        Scale = new Vector3(50, 0, 50),
-                        Color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f),
-                        Grid = true
-                    });
+                Platforms = new List<Structure>();
+                for (int i = 0; i < level.GetLength(0); i++) {
+                    for (int ii = 0; ii < level.GetLength(1); ii++) {
+                        switch(i) {
+                            case 0:
+                                int x = level[i, ii, 0];
+                                int y = level[i, ii, 2];
+                                int z = level[i, ii, 1];
+                                Platforms.Add(new Structure() {
+                                    ID = ii,
+                                    Scale = new Vector3(50, 0, 50),
+                                    Position = new Vector3(x * 100, y, -50 + (z * 100)),
+                                    Color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f),
+                                    Grid = true
+                                });
+                                break;
+                            case 1:
+                                if (level[i, ii, 2] == 1) {
+                                    int index = Platforms.FindIndex(id => id.ID == ii);
+                                    Platforms[index].Goal = true;
+                                }
+                                break;
+                        }                 
+                    }
                 }
+                //Sort list based on height, bottom gets to be drawn first for the aesthetic
+                Platforms.Sort((x, y) => x.Position.y.CompareTo(y.Position.y));
                 dialogueIndex = 0;
+                Player.ResetToPosition();
                 levelLoaded = true;
-            }
-        }
-        public void LoadGoal(int[,] level) {
-            while (!goalLoaded) {
-                for (int i = 0; i < 1; i++) {
-                    int x = level[i, 0];
-                    int z = level[i, 1];
-                    Platforms.Add(new Structure() {
-                        Position = new Vector3(x * 100, 0, -50 + (z * 100)),
-                        Scale = new Vector3(50, 0, 50),
-                        Color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f),
-                        Grid = true,
-                        Goal = true
-                    });
-                }
-                goalLoaded = true;
-            }
-        }
-
-        public void DrawMovingGridLines(OpenGL gl) {
-            Mesh Line = new Mesh {
-                Color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f)
-            };
-            //Center Line
-            Line.DrawLine(gl, new Vector3(-550, 0, -200), new Vector3(550, 0, -200));
-            //Bottom Line
-            Line.DrawLine(gl, new Vector3(-250, 0, 0), new Vector3(250, 0, 0));
-            //Vertical Lines To Right
-            for (int i = 0; i < 25; i++) {
-                Line.DrawLine(gl, new Vector3(20 * i, 0, 0), new Vector3(20 * i, 0, -200));
-            }
-            //Vertical Lines to Left
-            for (int i = 1; i < 25; i++) {
-                Line.DrawLine(gl, new Vector3(-20 * i, -0, 0), new Vector3(-20 * i, 0, -200));
-            }
-            //Lines Top to Bottom
-            for (int i = 0; i < 10; i++) {
-                Line.DrawLine(gl, new Vector3(-550, 0 - (3 * i), -200 + (20 * i)), new Vector3(550, 0 - (3 * i), -200 + (20 * i)));
             }
         }
     }
