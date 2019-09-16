@@ -31,11 +31,9 @@ C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\generationminijam-game.exe.config
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\generationminijam-game.exe
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\generationminijam-game.pdb
-C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\NAudio.dll
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\SharpGL.dll
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\SharpGL.SceneGraph.dll
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\SharpGL.WPF.dll
-C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\NAudio.xml
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\SharpGL.pdb
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\SharpGL.xml
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\SharpGL.SceneGraph.pdb
@@ -75,3 +73,5 @@ C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminija
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\bin\Debug\SFML.System.xml
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\bin\Debug\SFML.Window.xml
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game.exe.config
+C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\Resources\werq-by-kevin-macleod.mp3
+C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game.csproj.CopyComplete

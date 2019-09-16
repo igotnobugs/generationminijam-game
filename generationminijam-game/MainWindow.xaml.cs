@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SharpGL;
 using generationminijam_game.Models;
-using SFML.Audio;
 
 //For MiniGameJam 12Sept19 by Tabalong
 
@@ -126,7 +125,7 @@ namespace generationminijam_game {
         private float dialogueDuration = 30;
         private float dialogueNextDuration;
         private int dialogueIndex = 0;
-        private int level = 0;
+        private int level = -1;
         //private bool ActorInPlatform = true;
         private bool dying = false;
         //private int startTime = 20;
@@ -149,7 +148,6 @@ namespace generationminijam_game {
                                       { { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 0}, { 0, 0, 1} } };
 
         public bool isStartMusPlayed = false;
-        public Music test = new Music("Resources/hypnothis-by-kevin-macleod.mp3");
 
         public void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args) {
             OpenGL gl = args.OpenGL;
@@ -197,8 +195,6 @@ namespace generationminijam_game {
             if (level != 0) {
                 gl.LookAt(Player.Position.x + mousePos.x / 12, GameUtils.Constrain(100.0f + Player.Position.z, 50, 400), GameUtils.Constrain(-10.0f + Player.Position.z, -200, 200), Player.Position.x + mousePos.x / 12, -90.0f, GameUtils.Constrain(-250.0f + Player.Position.z, -300.0f, -250.0f), 0, 1, 0);
                 gl.Translate(0, 0, -50.0f);
-
-                test.Play();
 
                 Player.DrawCube(gl);              
                 foreach (var platform in Platforms) {
