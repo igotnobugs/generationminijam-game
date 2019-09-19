@@ -113,11 +113,11 @@ namespace generationminijam_game {
         //public Mp3FileReader hypnothisMus = new Mp3FileReader("Resources/hypnothis-by-kevin-macleod.mp3");
         //public Mp3FileReader werqMus = new Mp3FileReader("Resources/werq-by-kevin-macleod.mp3");
 
-        Vector3 standardPosition = new Vector3(100, 300, 0);
-        Vector4 blueColor = new Vector4(0.4f, 0.4f, 0.9f, 1.0f);
-        Vector4 greenColor = new Vector4(0.1f, 0.7f, 0.1f, 1.0f);
-        Vector4 yellowColor = new Vector4(0.7f, 0.7f, 0.1f, 1.0f);
-        Vector4 whiteTransparentColor = new Vector4(0.1f, 0.1f, 0.1f, 0.8f);
+        Vector3 STANDARD_POSITION = new Vector3(100, 300, 0);
+        Vector4 BLUE_COLOR = new Vector4(0.4f, 0.4f, 0.9f, 1.0f);
+        Vector4 GREEN_COLOR = new Vector4(0.1f, 0.7f, 0.1f, 1.0f);
+        Vector4 YELLOW_COLOR = new Vector4(0.7f, 0.7f, 0.1f, 1.0f);
+        Vector4 WHITE_TRANSPARENT_COLOR = new Vector4(0.1f, 0.1f, 0.1f, 0.8f);
 
         public bool levelLoaded = false;
         public bool goalLoaded = false;
@@ -125,13 +125,11 @@ namespace generationminijam_game {
         private float dialogueDuration = 30;
         private float dialogueNextDuration;
         private int dialogueIndex = 0;
-        private int level = -1;
-        //private bool ActorInPlatform = true;
+        private int level = 0;
         private bool dying = false;
-        //private int startTime = 20;
         private int resetCountdown = 30;
-        private bool win = false;
         private int SpinningMeshRotate;
+        private bool isGoalReached = false;
 
         private float deathHeight = -50.0f;
 
@@ -196,33 +194,39 @@ namespace generationminijam_game {
                 gl.LookAt(Player.Position.x + mousePos.x / 12, GameUtils.Constrain(100.0f + Player.Position.z, 50, 400), GameUtils.Constrain(-10.0f + Player.Position.z, -200, 200), Player.Position.x + mousePos.x / 12, -90.0f, GameUtils.Constrain(-250.0f + Player.Position.z, -300.0f, -250.0f), 0, 1, 0);
                 gl.Translate(0, 0, -50.0f);
 
-                Player.DrawCube(gl);              
+                //Draw Player
+                Player.DrawCube(gl);
+                //Then draw platforms
                 foreach (var platform in Platforms) {
                     platform.Draw(gl);
                     if (Player.HasCollidedWith(platform)) {
                         if (platform.Goal) {
-                            dying = true;
-                            win = true;
+                            isGoalReached = true;
                         }
                     }
                 }
+                //Enable Player Gravity, floor is platforms
                 Player.AllowGravity(Platforms);
 
-                //if (level == 1) {
-                //    Enemy.DrawCube(gl);
-                //    Enemy.ChasePlayer(Player, true);
-                //}
+                Player.EnableControl(true);
 
-                if (dying) {
-                    //waveOutDevice.Volume = 0.5f;
-                    resetCountdown--;
-                    Player.Color.a -= 0.05f;
-                    if (Player.Scale.x > 0) {
-                        Player.Scale -= new Vector3(0.2f, 0.2f, 0.2f);
-                    }
+                if (Player.Position.y < deathHeight) {
+                    dying = true;
                 }
 
-                if ((resetCountdown < 0)  && (!win)) {
+                //Effect when player dies
+                if (dying) {
+                    resetCountdown--;
+                    Player.Fade();
+                }
+
+                //Effect when player reacjed goal
+                if ((isGoalReached) && (resetCountdown > 0)) {
+                    resetCountdown--;
+                    Player.Shrink();
+                }
+
+                if ((resetCountdown <= 0) && (!isGoalReached)) {
                     Player.Velocity *= 0;
                     dying = false;
                     resetCountdown = 60;
@@ -230,14 +234,11 @@ namespace generationminijam_game {
                     Player.Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
                     Player.ResetToPosition();
                     Player.Scale = new Vector3(10, 10, 10);
-                    //waveOutDevice.Volume = 1.0f;
                 }
 
-                if ((resetCountdown < 0) && (win)) {
+                if ((resetCountdown <= 0) && (isGoalReached)) {
                     Player.Velocity *= 0;
-                    dying = false;
-                    resetCountdown = 60;
-                    //waveOutDevice.Volume = 1.0f;
+                    Player.AllowGravity(Platforms, false);
                 }
             }
             #endregion
@@ -255,53 +256,51 @@ namespace generationminijam_game {
                             dialogueEnabled = true;
                             break;
                         case 1:
-                            DialogBox(gl, "Hey Blu, what is that?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Hey Blu, what is that?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 2:
-                            DialogBox(gl, "Ah, it's just some AI that I created.", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Ah, it's just some AI that I created.", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 3:
-                            DialogBox(gl, "What does it do?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "What does it do?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 4:
-                            DialogBox(gl, "Nothing much yet, but it can move to the right.", blueColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "(Press D)", yellowColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
-                            Player.EnableControl(true);
+                            DialogBox(gl, "Nothing much yet, but it can move to the right.", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "(Press D)", YELLOW_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             Player.canMoveRight = true;
                             dialogueNextDuration = 80;
                             break;
                         case 5:
-                            Player.EnableControl(true);
                             dialogueEnabled = false;
-                            if (win) {
+                            if (isGoalReached) {
                                 dialogueIndex = 6;
                                 dialogueEnabled = true;
                                 dialogueNextDuration = 80;
                             }
                             break;
                         case 6:
-                            DialogBox(gl, "... That's it?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "... That's it?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 7:
-                            DialogBox(gl, "Yeah, but it's amazing isn't it?", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Yeah, but it's amazing isn't it?", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 8:
-                            DialogBox(gl, "I guess so...", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "I guess so...", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 9:
-                            win = false;
+                            resetCountdown = 60;
+                            isGoalReached = false;
                             dialogueEnabled = false;
                             levelLoaded = false;
                             goalLoaded = false;
                             Player.Scale = new Vector3(10, 10, 10);
                             Player.Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
-                            Player.EnableControl(true);
                             level++;
                             break;
                     }
@@ -310,53 +309,53 @@ namespace generationminijam_game {
                     switch (dialogueIndex) {
                         case 0:
                             dialogueEnabled = true;
-                            DialogBox(gl, "2 years later", yellowColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "2 years later", YELLOW_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 1:
-                            DialogBox(gl, "Ah, I remember this, how is it going along?.", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Ah, I remember this, how is it going along?.", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 2:
-                            DialogBox(gl, "This time, it can move in all directions!", blueColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "(W, A, S, D)", yellowColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "This time, it can move in all directions!", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "(W, A, S, D)", YELLOW_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             Player.canMoveUp = true;
                             Player.canMoveLeft = true;
                             Player.canMoveDown = true;
                             dialogueNextDuration = 80;
                             break;
                         case 3:
-                            DialogBox(gl, "It's been 2 years, right?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "It's been 2 years, right?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 4:
                             dialogueEnabled = false;
-                            if (win) {
+                            if (isGoalReached) {
                                 dialogueIndex = 5;
                                 dialogueEnabled = true;
                                 dialogueNextDuration = 80;
                             }
                             break;
                         case 5:
-                            DialogBox(gl, "Aren't you going a bit too slow?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Aren't you going a bit too slow?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 6:
-                            DialogBox(gl, "Nonsense. You have to be careful with AI.", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Nonsense. You have to be careful with AI.", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 7:
-                            DialogBox(gl, "Next thing you know they might develop sentience", blueColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "and rebel against us! Know what I mean?", blueColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "Next thing you know they might develop sentience", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "and rebel against us! Know what I mean?", BLUE_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             dialogueNextDuration = 80;
                             break;
                         case 8:
-                            DialogBox(gl, "With the rate you're going,", greenColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "we will probably destroy ourselves sooner.", greenColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "With the rate you're going,", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "we will probably destroy ourselves sooner.", GREEN_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             dialogueNextDuration = 80;
                             break;
                         case 9:
-                            win = false;
+                            isGoalReached = false;
                             dialogueEnabled = false;
                             levelLoaded = false;
                             goalLoaded = false;
@@ -368,63 +367,63 @@ namespace generationminijam_game {
                     switch (dialogueIndex) {
                         case 0:
                             dialogueEnabled = true;
-                            DialogBox(gl, "4 years later", yellowColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "4 years later", YELLOW_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 1:
-                            DialogBox(gl, "How is your kids doing?.", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "How is your kids doing?.", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 2:
-                            DialogBox(gl, "They are fine but more importantly,", blueColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "look at this!", blueColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "They are fine but more importantly,", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "look at this!", BLUE_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             Player.canSprint= true;
                             Player.canJump = true;
                             dialogueNextDuration = 80;
                             break;
                         case 3:
-                            DialogBox(gl, "You still working on that?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "Can it talk now?", greenColor, new Vector4(0,0,0,0), standardPosition, 600, 100,22,20,80);
+                            DialogBox(gl, "You still working on that?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "Can it talk now?", GREEN_COLOR, new Vector4(0,0,0,0), STANDARD_POSITION, 600, 100,22,20,80);
                             dialogueNextDuration = 80;
                             break;
                         case 4:
-                            DialogBox(gl, "No no, it can Jump and Run!", blueColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "(Space, LeftShift)", yellowColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "No no, it can Jump and Run!", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "(Space, LeftShift)", YELLOW_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             Player.canJump = true;
                             dialogueNextDuration = 80;
                             break;
                         case 5:
-                            DialogBox(gl, "Guugle already have develop AI personalities you know?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Guugle already have develop AI personalities you know?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 6:
                             dialogueEnabled = false;
-                            if (win) {
+                            if (isGoalReached) {
                                 dialogueIndex = 7;
                                 dialogueEnabled = true;
                                 dialogueNextDuration = 80;
                             }
                             break;
                         case 7:
-                            DialogBox(gl, "What's important is that you're improving.", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "What's important is that you're improving.", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 8:
-                            DialogBox(gl, "But what's the point", greenColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "if someone already did it way better?", greenColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "But what's the point", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "if someone already did it way better?", GREEN_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
 
                             dialogueNextDuration = 80;
                             break;
                         case 9:
-                            DialogBox(gl, "You'll understand it if you make your own as well", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "You'll understand it if you make your own as well", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 10:
-                            DialogBox(gl, "No thanks, I'll pass.", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "No thanks, I'll pass.", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 11:
-                            win = false;
+                            isGoalReached = false;
                             dialogueEnabled = false;
                             levelLoaded = false;
                             goalLoaded = false;
@@ -436,61 +435,61 @@ namespace generationminijam_game {
                     switch (dialogueIndex) {
                         case 0:
                             dialogueEnabled = true;
-                            DialogBox(gl, "1 year later", yellowColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "1 year later", YELLOW_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 1:
-                            DialogBox(gl, "It's getting cold out there.", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "It's getting cold out there.", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 2:
-                            DialogBox(gl, "Eh, we had worse.", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Eh, we had worse.", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             Player.canSprint = true;
                             Player.canJump = true;
                             dialogueNextDuration = 80;
                             break;
                         case 3:
-                            DialogBox(gl, "What's the progress?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "What's the progress?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 4:
-                            DialogBox(gl, "Nothing,", blueColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "I'm not sure what else to add anymore.", blueColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "Nothing,", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "I'm not sure what else to add anymore.", BLUE_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
                             Player.canJump = true;
                             dialogueNextDuration = 80;
                             break;
                         case 5:
-                            DialogBox(gl, "How about... giving it something to fight with?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "How about... giving it something to fight with?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 6:
                             dialogueEnabled = false;
-                            if (win) {
+                            if (isGoalReached) {
                                 dialogueIndex = 7;
                                 dialogueEnabled = true;
                                 dialogueNextDuration = 80;
                             }
                             break;
                         case 7:
-                            DialogBox(gl, "What? Why would I do that?", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "What? Why would I do that?", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 8:
-                            DialogBox(gl, "I don't know,", greenColor, whiteTransparentColor, standardPosition, 600, 100);
-                            DialogBox(gl, "Maybe just a test?", greenColor, new Vector4(0, 0, 0, 0), standardPosition, 600, 100, 22, 20, 80);
+                            DialogBox(gl, "I don't know,", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
+                            DialogBox(gl, "Maybe just a test?", GREEN_COLOR, new Vector4(0, 0, 0, 0), STANDARD_POSITION, 600, 100, 22, 20, 80);
 
                             dialogueNextDuration = 80;
                             break;
                         case 9:
-                            DialogBox(gl, "I don't want to see it get hurt.", blueColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "I don't want to see it get hurt.", BLUE_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 10:
-                            DialogBox(gl, "Are you serious?", greenColor, whiteTransparentColor, standardPosition, 600, 100);
+                            DialogBox(gl, "Are you serious?", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, STANDARD_POSITION, 600, 100);
                             dialogueNextDuration = 80;
                             break;
                         case 11:
-                            win = false;
+                            isGoalReached = false;
                             dialogueEnabled = false;
                             levelLoaded = false;
                             goalLoaded = false;
@@ -515,12 +514,12 @@ namespace generationminijam_game {
 
             #region UI
             if (level == 0) { //MAIN MENU
-                DialogBox(gl, "Blunondrum", blueColor, new Vector4(0,0,0,0), new Vector3((float)Width / 4, 50, 0), 280, 60, 50);
-                DialogBox(gl, "Press Enter to Start", greenColor, whiteTransparentColor, new Vector3((float)Width/3, 300, 0), 280, 60, 25);
+                DialogBox(gl, "Blunondrum", BLUE_COLOR, new Vector4(0,0,0,0), new Vector3((float)Width / 4, 50, 0), 280, 60, 50);
+                DialogBox(gl, "Press Enter to Start", GREEN_COLOR, WHITE_TRANSPARENT_COLOR, new Vector3((float)Width/3, 300, 0), 280, 60, 25);
             }
             else {
-                DialogBox(gl, "Level", blueColor, new Vector4(0.3f, 0.3f, 0.3f, 0.3f), new Vector3(20, 20, 0), 90, 20, 20, 5, 45);
-                DialogBox(gl, level.ToString(), greenColor, new Vector4(0, 0, 0, 0), new Vector3(20, 20, 0), 100, 20, 20, 55, 45);
+                DialogBox(gl, "Level", BLUE_COLOR, new Vector4(0.3f, 0.3f, 0.3f, 0.3f), new Vector3(20, 20, 0), 90, 20, 20, 5, 45);
+                DialogBox(gl, level.ToString(), GREEN_COLOR, new Vector4(0, 0, 0, 0), new Vector3(20, 20, 0), 100, 20, 20, 55, 45);
             }
             #endregion
 

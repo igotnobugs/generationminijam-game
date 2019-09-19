@@ -14,6 +14,8 @@ namespace generationminijam_game.Models {
         public Vector3 jumpForce;
         public Vector3 startingPosition;
 
+        public bool gravity = false;
+
         public Key KeyUp = Key.W;
         public Key KeyDown = Key.S;
         public Key KeyLeft = Key.A;
@@ -57,12 +59,29 @@ namespace generationminijam_game.Models {
             canJump = true;
         }
 
+        //Shrink mesh equally based on rate
+        public void Shrink(float rate = 0.2f) {
+            if (Scale.x > 0) {
+                Scale -= new Vector3(rate, rate, 0.2f);
+            }
+        }
+
+        //Fade mesh color by reducing alpga
+        public void Fade(float rate = 0.05f) {
+            Color.a -= rate;
+        }
+
+        //Reset player to default position
         public void ResetToPosition() {
             Position = startingPosition;
         }
 
-        public void AllowGravity(List<Structure> floors) {
-            //floors = floors.FindAll(x => x.Position.y <= Position.y);
+        //Apply Gravity
+        public void AllowGravity(List<Structure> floors, bool enable = false) {
+            if (!enable) {
+                return;
+            }
+
             foreach (var floor in floors) {              
                 if (!HasCollidedWith(floor)) {
                     ApplyGravity();
