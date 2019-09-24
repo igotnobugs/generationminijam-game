@@ -69,6 +69,7 @@
     <Compile Include="Models\Mesh.cs" />
     <Compile Include="Models\Movable.cs" />
     <Compile Include="Models\Structure.cs" />
+    <Compile Include="Models\UI.cs" />
     <Compile Include="Models\Utils.cs" />
     <Compile Include="Models\Vector3.cs" />
     <Page Include="MainWindow.xaml">

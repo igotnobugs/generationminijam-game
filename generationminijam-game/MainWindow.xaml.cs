@@ -125,7 +125,7 @@ namespace generationminijam_game {
         private float dialogueDuration = 30;
         private float dialogueNextDuration;
         private int dialogueIndex = 0;
-        private int level = 0;
+        private int level = -1;
         private bool dying = false;
         private int resetCountdown = 30;
         private int SpinningMeshRotate;

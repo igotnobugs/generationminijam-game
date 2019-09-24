@@ -74,3 +74,4 @@ C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminija
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\bin\Debug\SFML.Window.xml
 C:\Users\Jerry\Documents\Unsorted\Github\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game.exe.config
 C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\bin\Debug\Resources\werq-by-kevin-macleod.mp3
+C:\Users\11400314\Documents\GitHub\generationminijam-game\generationminijam-game\obj\Debug\generationminijam-game.csproj.CopyComplete
