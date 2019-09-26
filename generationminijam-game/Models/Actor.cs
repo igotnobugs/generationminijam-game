@@ -101,8 +101,11 @@ namespace generationminijam_game.Models {
 
             if (Keyboard.IsKeyDown(KeySprint) && canSprint) {
                 maxSpeed = 6.0f;
-            } else {
+            } else {             
                 maxSpeed = 3.0f;
+                if (Velocity.GetLength() > maxSpeed) {
+                    ApplyFriction(frictionCoefficient);
+                }
             }
 
             if (Keyboard.IsKeyDown(KeyJump) && canJump && !isJumping) {

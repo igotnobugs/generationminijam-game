@@ -127,7 +127,7 @@ namespace generationminijam_game {
         private int dialogueIndex = 0;
         private int level = -1;
         private bool dying = false;
-        private int resetCountdown = 30;
+        private int resetCountdown = 80;
         private int SpinningMeshRotate;
         private bool isGoalReached = false;
 
@@ -206,7 +206,7 @@ namespace generationminijam_game {
                     }
                 }
                 //Enable Player Gravity, floor is platforms
-                Player.AllowGravity(Platforms);
+                Player.AllowGravity(Platforms, true);
 
                 Player.EnableControl(true);
 
@@ -229,7 +229,7 @@ namespace generationminijam_game {
                 if ((resetCountdown <= 0) && (!isGoalReached)) {
                     Player.Velocity *= 0;
                     dying = false;
-                    resetCountdown = 60;
+                    resetCountdown = 80;
                     Player.EnableControl(true);
                     Player.Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
                     Player.ResetToPosition();
@@ -294,7 +294,7 @@ namespace generationminijam_game {
                             dialogueNextDuration = 80;
                             break;
                         case 9:
-                            resetCountdown = 60;
+                            resetCountdown = 80;
                             isGoalReached = false;
                             dialogueEnabled = false;
                             levelLoaded = false;
