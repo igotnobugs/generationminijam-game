@@ -129,7 +129,6 @@ namespace generationminijam_game {
         private int resetCountdown = 80;
         private int spinningMeshRotate;
         private bool isGoalReached = false;
-
         private float deathHeight = -50.0f;
 
         //1st level Array - Position (left/right,up/down,depth). 2nd (n/a, n/a, goal)
