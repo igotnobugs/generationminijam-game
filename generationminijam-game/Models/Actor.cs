@@ -13,7 +13,7 @@ namespace generationminijam_game.Models {
         public float Speed;
         public Vector3 jumpForce;
         public Vector3 startingPosition;
-
+        public bool dying;
         public bool gravity = false;
 
         public Key KeyUp = Key.W;
@@ -47,6 +47,8 @@ namespace generationminijam_game.Models {
             canSprint = false;
             canJump = false;
             isJumping = false;
+
+            dying = false;
         }
 
         public void EnableAll() {
@@ -93,19 +95,18 @@ namespace generationminijam_game.Models {
             }        
         }
 
-        public void EnableControl(bool enable = false) {
-
-            if (!enable) {
-                return;
+        public void EnableControl(bool enable = false) {         
+            if (!enable) return;
+            
+            Console.WriteLine("Velocity = {0}, Max Speed = {1}", Velocity.GetLength(), maxSpeed);
+            if (Velocity.GetLength() > maxSpeed) {
+                ApplyFriction(1);
             }
 
             if (Keyboard.IsKeyDown(KeySprint) && canSprint) {
                 maxSpeed = 6.0f;
-            } else {             
+            } else {
                 maxSpeed = 3.0f;
-                if (Velocity.GetLength() > maxSpeed) {
-                    ApplyFriction(frictionCoefficient);
-                }
             }
 
             if (Keyboard.IsKeyDown(KeyJump) && canJump && !isJumping) {

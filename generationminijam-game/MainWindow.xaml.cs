@@ -126,9 +126,8 @@ namespace generationminijam_game {
         private float dialogueNextDuration;
         private int dialogueIndex = 0;
         private int level = -1;
-        private bool dying = false;
         private int resetCountdown = 80;
-        private int SpinningMeshRotate;
+        private int spinningMeshRotate;
         private bool isGoalReached = false;
 
         private float deathHeight = -50.0f;
@@ -162,9 +161,9 @@ namespace generationminijam_game {
                     LoadLevel(gl, testmap);                   
                     break;
                 case 0: //MAIN MENU
-                    gl.Rotate(20, 24 + SpinningMeshRotate, 20);
+                    gl.Rotate(20, 24 + spinningMeshRotate, 20);
                     SpinningMesh.DrawCube(gl);
-                    SpinningMeshRotate++;
+                    spinningMeshRotate++;
                     gl.LoadIdentity();
                     if (Keyboard.IsKeyDown(Key.Enter)) {
                         level = 1;
@@ -211,11 +210,11 @@ namespace generationminijam_game {
                 Player.EnableControl(true);
 
                 if (Player.Position.y < deathHeight) {
-                    dying = true;
+                    Player.dying = true;
                 }
 
                 //Effect when player dies
-                if (dying) {
+                if (Player.dying) {
                     resetCountdown--;
                     Player.Fade();
                 }
@@ -228,7 +227,7 @@ namespace generationminijam_game {
 
                 if ((resetCountdown <= 0) && (!isGoalReached)) {
                     Player.Velocity *= 0;
-                    dying = false;
+                    Player.dying = false;
                     resetCountdown = 80;
                     Player.EnableControl(true);
                     Player.Color = new Vector4(0.0f, 1.0f, 1.0f, 1.0f);
